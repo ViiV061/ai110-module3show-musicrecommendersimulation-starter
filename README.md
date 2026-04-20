@@ -178,11 +178,30 @@ The `r&b_romantic` profile exposes the **sparse catalog bias** clearly — only 
 
 ## Experiments You Tried
 
-Use this section to document the experiments you ran. For example:
+### Experiment 1 — Weight shift (genre_w 3.0→1.5, energy_w 1.5→3.0)
 
-- What happened when you changed the weight on genre from 2.0 to 0.5
-- What happened when you added tempo or valence to the score
-- How did your system behave for different types of users
+Run `python -m src.main` and look at the **WEIGHT EXPERIMENT** section at the bottom.
+
+With **default weights** (genre=3.0, energy=1.5), the pop_fan ranking is:
+`Sunrise City → Gym Hero → Rooftop Lights → Neon Heartbeat → Dirt Road Sundown`
+
+With **experimental weights** (genre=1.5, energy=3.0), it becomes:
+`Sunrise City → Rooftop Lights → Neon Heartbeat → Dirt Road Sundown → Gym Hero`
+
+**Gym Hero drops from #2 to #5.** Why? With default weights, Gym Hero earned 3.0 genre points that offset its mood mismatch. When genre dropped to 1.5, Rooftop Lights and Neon Heartbeat — which both match the "happy" mood and are energetically closer to target — overtook it. Energy proximity now decides the race, rewarding cross-genre songs with the right vibe over same-genre songs with the wrong mood.
+
+### Experiment 2 — Adversarial profiles (edge cases)
+
+Four adversarial profiles were added to `src/main.py` to stress-test the scoring logic:
+
+| Profile | Conflict designed | What happened |
+|---|---|---|
+| `grief_workout` | metal + melancholic (catalog has no such combo) | Genre won: Iron Curtain (#1) even though it's "intense", then a quiet folk song (#2) — surprising |
+| `classical_student` | classical + focused (only 1 classical song) | Filter bubble exposed: #1 correct, #2–5 are random low-energy songs |
+| `extreme_acoustic` | folk + melancholic + very low energy | Worked well — the catalog actually has this song |
+| `jazz_intensity` | jazz + intense (only jazz song is "relaxed") | System failure: recommended a mellow coffee-shop song to someone who wanted intense high-energy music |
+
+The `jazz_intensity` result is the clearest bias finding: the genre weight of 3.0 alone elevated an energetically wrong song above three songs that correctly matched mood and energy but had the wrong genre label.
 
 ---
 
