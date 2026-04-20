@@ -207,29 +207,23 @@ The `jazz_intensity` result is the clearest bias finding: the genre weight of 3.
 
 ## Limitations and Risks
 
-Summarize some limitations of your recommender.
+- Works only on a 20-song fictional catalog — no real listening data.
+- Genre lock-in: a single-genre listener always gets the same #1 after catalog sparsity is hit.
+- Mood labels are binary strings with no synonym awareness ("chill" ≠ "relaxed").
+- No interaction memory — every session starts from scratch.
+- The `jazz_intensity` profile demonstrated a complete failure: the system recommended the opposite of what was asked because genre weight dominated mood and energy mismatches.
 
-Examples:
-
-- It only works on a tiny catalog
-- It does not understand lyrics or language
-- It might over favor one genre or mood
-
-You will go deeper on this in your model card.
+Full analysis in [model_card.md](model_card.md).
 
 ---
 
 ## Reflection
 
-Read and complete `model_card.md`:
+[**→ Full Model Card (VibeFinder 1.0)**](model_card.md)
 
-[**Model Card**](model_card.md)
+Building VibeFinder made one thing concrete that is easy to miss when using real apps: a recommender is only as good as the data behind it, and its biases are built into the weights, not hidden in complexity. The `jazz_intensity` experiment was the clearest moment — the system confidently returned the wrong song because the math was working exactly as designed. That is not a bug; it is what "algorithmic bias" actually looks like in practice.
 
-Write 1 to 2 paragraphs here about what you learned:
-
-- about how recommenders turn data into predictions
-- about where bias or unfairness could show up in systems like this
-
+The other surprise was how believable the output feels in favorable cases. The chill_studier profile hit a perfect 7.00/7.00 with just four if-statements and one arithmetic formula. That feels intelligent. But run the same logic on an edge-case profile and it fails instantly in ways a human never would. Real apps feel smarter mostly because their catalog is millions of songs deep — the holes are rarely visible, not because the underlying logic is smarter.
 
 ---
 
